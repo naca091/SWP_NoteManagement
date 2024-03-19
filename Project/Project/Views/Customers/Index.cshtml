@@ -1,0 +1,156 @@
+@model PaginatedList<Customer>
+<link href="@Url.Content("~/css/Index.css")" rel="stylesheet">
+<style>
+    .button-container {
+        display: flex;
+        justify-content: flex-end; /* Align to the right */
+        margin-top: 20px; /* Adjust as needed */
+    }
+
+        .button-container input[type="submit"] {
+            margin-left: 10px; /* Add space between the buttons */
+        }
+
+        .button-container p {
+            margin: 0; /* Remove default margin */
+        }
+</style>
+<div class="container">
+
+    <div class="centered text">
+        <h2>Customer List</h2>
+    </div>
+
+   @*  <div>
+        <a asp-action="Create" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Create New</a>
+    </div>
+
+    <a asp-action="Download" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+        <i class="fas fa-download fa-sm text-white-50"></i> Download Customers
+    </a>
+    <form asp-action="Index" method="get">
+        <p>
+            Name: <input type="text" name="searchString">
+            <input type="submit" value="Search" />
+        </p>
+    </form> *@
+    <div class="d-sm-flex align-items-center mb-4 horizontal justify-content-between">
+        <form asp-action="Index" method="get" class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+            <div class="input-group">
+                <input type="text" class="form-control bg-light border-0 small" name="searchString" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-search fa-sm"></i>
+                    </button>
+                </div>
+            </div> 
+        </form>
+        <div>
+          
+            <a asp-action="Download" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                <i class="fas fa-download fa-sm text-white-50"></i> Download Customers
+            </a>
+            <a asp-action="Create" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">Create New</a>
+
+
+
+        </div>
+    </div>
+    @if (Model != null)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Cusomter's Name
+                    </th>
+
+                    <th>Phone Number</th>
+                    <th>Action</th>
+                    <th>Rank</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Phone)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.CustomerID" style="background-color: #0099FF;" class="link-edit">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.CustomerID" style="background-color: #0033CC;" class="link-details">Details</a>
+                        </td>
+
+                        <td>@Html.Raw(GetRank(item.Total)) | @Html.DisplayFor(modelItem => item.Total) Point</td>
+                        
+                       
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No customers found.</p>
+    }
+    <div class="pagination" id="notes-pagination">
+        @if (Model.HasPreviousPage)
+        {
+            <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)">Previous</a>
+        }
+        else
+        {
+            <span>Previous</span>
+        }
+
+        <span> @Model.PageIndex </span>
+
+        @if (Model.HasNextPage)
+        {
+            <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)">Next</a>
+        }
+        else
+        {
+            <span> Next</span>
+        }
+    </div>
+    <div class="button-container">
+        <div class="back-btn">
+            <div class="submit-btn">
+                <div class="input-data">
+                    <div class="inner"></div>
+                    <a asp-action="Index" class="btn btn-primary">Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@functions {
+    public string GetRank(decimal total)
+    {
+        string imagePath = string.Empty;
+        if (total > 1000000)
+            imagePath = "~/img/diamond.png";
+        else if (total > 500000)
+            imagePath = "~/img/platinum.png";
+        else if (total > 200000)
+            imagePath = "~/img/gold.png";
+        else if (total > 100000)
+            imagePath = "~/img/silver.png";
+        else
+            imagePath = "~/img/iron.png";
+
+        return $"<img src='{Url.Content(imagePath)}' style='width: 100px; height: 100px;'/>";
+    }
+
+
+}
+

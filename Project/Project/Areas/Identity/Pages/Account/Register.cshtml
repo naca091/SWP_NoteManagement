@@ -1,0 +1,156 @@
+﻿@page
+@model RegisterModel
+@{
+
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SB Admin 2 - Register</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+          rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="@Url.Content("~/css/Login.css")" rel="stylesheet">
+    <link href="@Url.Content("~/fontawesome-free-6.5.1-web/css/all.css")" rel="stylesheet">
+    <style>
+        .form-select {
+            /* Your styles here */
+            background-color: #eee;
+            border: none;
+            margin: 8px 0;
+            padding: 15px 15px;
+            font-size: 13px;
+            border-radius: 8px;
+            width: 100%;
+            outline: none;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-primary">
+
+    <div class="container" id="container">
+        <div class="form-container sign-up">
+            <form action="" href="" method="">
+                <!-- 5 nội quy chính trong việc xuất kho -->
+                <ol class="custom-ol">
+                    <li>
+                        <h2>Confirm Information</h2>
+                    </li>
+                    <li>
+                        <h2>Careful Packing</h2>
+                    </li>
+                    <li>
+                        <h2>Check and Compare</h2>
+                    </li>
+                    <li>
+                        <h2>Recording and Reporting</h2>
+                    </li>
+                    <li>
+                        <h2>Inventory Management</h2>
+                    </li>
+                </ol>
+
+            </form>
+        </div>
+
+        <div class="form-container sign-in">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <h1>Create a new account for Staff</h1>
+                <input asp-for="Input.Username" autocomplete="username" aria-required="true" type="text"
+                       placeholder="User Name">
+                <span asp-validation-for="Input.Username" class="text-danger"></span>
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                <input asp-for="Input.Email" autocomplete="email" aria-required="true"
+                       placeholder="Email">
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                <input asp-for="Input.Phonenumber" autocomplete="phonenumber" aria-required="true"
+                       placeholder="Please enter phone number">
+                <span asp-validation-for="Input.Phonenumber" class="text-danger"></span>
+
+                <input asp-for="Input.Password" autocomplete="new-password" aria-required="true"
+                       placeholder="Password">
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+
+                <input asp-for="Input.ConfirmPassword" autocomplete="new-password" aria-required="true"
+                      placeholder="Confirm Password">
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+
+                <select asp-for="Input.Role" class="form-select" asp-items="@Model.Input.RolesList"
+                        aria-required="true">
+                    <option disabled selected>Select Role</option>
+                </select>
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                <button id="registerSubmit" type="submit">Sign Up</button>
+            </form>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-left">
+                    <h1>Back to Sign in <i class="fa-solid fa-building"></i></h1>
+                    <p>Enter your personal details to use all of site features</p>
+                    <button class="hidden" id="login">
+                        <i class="fa-solid fa-circle-arrow-left"
+                           style="font-size: 20px;"></i>
+                    </button>
+                </div>
+                <div class="toggle-panel toggle-right">
+                    <h1>Welcome to My Comapny <i class="fa-regular fa-building"></i></h1>
+                    <p>
+                        Fast and easy domestic shipping
+                        Hotline
+                    </p>
+                    <button class="hidden" id="register">
+                        <i class="fa-solid fa-circle-arrow-right"
+                           style="font-size: 20px;"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+    <script>
+        const container = document.getElementById('container');
+        const registerBtn = document.getElementById('register');
+        const loginBtn = document.getElementById('login');
+
+        registerBtn.addEventListener('click', () => { container.classList.add("active") });
+        loginBtn.addEventListener('click', () => { container.classList.remove("active") });
+    </script>
+</body>
+
+</html>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

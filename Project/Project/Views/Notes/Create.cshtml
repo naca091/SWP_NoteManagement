@@ -1,0 +1,447 @@
+﻿@model Project.Models.NoteViewModel
+
+<link href="@Url.Content("~/css/Product.css")" rel="stylesheet">
+<style>
+    .container form {
+        width: 100%;
+        max-width: 3000px;
+        padding: 25px 10px;
+        background: #fff;
+        box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    }
+
+    #productSearch {
+        margin-bottom: 10px; /* Add some space between search input and select */
+    }
+
+    #productSearchInput {
+        margin-bottom: 5px; /* Add some space between search input and results */
+    }
+
+    #productToExportForm {
+        position: relative;
+    }
+
+    .buttons-container {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        text-align: right;
+    }
+
+        .buttons-container button {
+            margin-left: 10px; /* Adjust spacing between buttons */
+        }
+
+    #productToExportForm {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-dropdown {
+        margin-bottom: 20px;
+    }
+
+        .product-dropdown label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .product-dropdown input,
+        .product-dropdown select {
+            margin-bottom: 10px;
+        }
+
+    .btn-remove {
+        background-color: #dc3545;
+        color: #fff;
+    }
+
+        .btn-remove:hover {
+            background-color: #c82333;
+        }
+
+</style>
+<div class="container">
+    <div class="text">
+        Create Note
+    </div>
+
+    <form asp-action="Create" method="post" class="custom-form">
+        <div class="form-group input-data">
+            <input asp-for="NoteCode" class="form-control" id="NoteCode" required placeholder="Note Code" />
+            <span asp-validation-for="NoteCode" class="text-danger"></span>
+            <div class="underline"></div>
+        </div>
+        <div class="form-group">
+            <label asp-for="UserName"></label>
+            <input asp-for="UserName" class="form-control" readonly />
+            <span asp-validation-for="UserName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group input-data">
+            <div id="productSearch" style="position: relative;">
+                <input type="text" id="productSearchInput" class="form-control" placeholder="Search phone number...">
+                <span id="searchIcon" class="fa fa-search" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></span>
+                <div id="productSearchResults"></div>
+            </div>
+            <select asp-for="Phone" asp-items="@(new SelectList(ViewBag.Customers, "CustomerID", "Phone"))" class="form-control" id="Phone" required>
+                <option value="">Select phone of Customer</option>
+            </select>
+            <span asp-validation-for="Phone" class="text-danger"></span>
+        </div>
+
+
+        <div class="form-group input-data">
+            <input asp-for="Customer" class="form-control" id="Customer" required placeholder="Customer Name" readonly />
+            <span asp-validation-for="Customer" class="text-danger"></span>
+            <div class="underline"></div>
+        </div>
+        <div class="form-group input-data">
+            <input asp-for="AddressCustomer" class="form-control" id="AddressCustomer" required placeholder="Address Customer" readonly />
+            <span asp-validation-for="AddressCustomer" class="text-danger"></span>
+            <div class="underline"></div>
+        </div>
+
+
+        <div class="form-group input-data">
+            <input asp-for="Reason" class="form-control" id="Reason" required placeholder="Reason" />
+            <span asp-validation-for="Reason" class="text-danger"></span>
+            <div class="underline"></div>
+
+        </div>
+
+        <div id="productToExportForm">
+            <h3>Product To Export</h3>
+            <div id="dropdownsContainer">
+                <div class="form-group product-dropdown">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Product:</label>
+                            <div id="productSearch" style="display: none;">
+                                <input type="text" id="productSearchInput" class="form-control" placeholder="Search product...">
+                                <div id="productSearchResults"></div>
+                            </div>
+                            <select id="productDropdown" asp-for="@Model.Products[0].ProductID" asp-items="@(new SelectList(ViewBag.Products, "ProductID", "ProductName"))" class="form-control">
+                                <option value="">Select a product</option>
+                            </select>
+
+                            <span id="productValidation" asp-validation-for="@Model.Products[0].ProductID" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <!-- Cột thứ nhất -->
+                            <div class="col-md-6">
+                                <div class="col-md-4">
+                                    <button type="button" id="showProductSearch" class="btn btn-primary">Search Product</button>
+                                </div>
+                                <div class="col-md-4">
+                                    <label>StockOut:</label>
+                                    <input asp-for="@Model.Products[0].StockOut" type="number" min="1" class="form-control" />
+                                    <span asp-validation-for="@Model.Products[0].StockOut" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="ProductCode">Product Code:</label>
+                                    <input type="text" id="ProductCode" class="form-control" readonly>
+                                </div>
+                            </div>
+                            <!-- Kết thúc cột thứ nhất -->
+                            <!-- Cột thứ hai -->
+                            <div class="col-md-6">
+                                <div class="col-md-4">
+                                    <label for="Price">Price:</label>
+                                    <input type="text" id="Price" class="form-control" readonly>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="Quantity">Quantity:</label>
+                                    <input type="text" id="Quantity" class="form-control" readonly>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="Category">Category:</label>
+                                    <input type="text" id="Category" class="form-control" readonly>
+                                </div>
+                            </div>
+                            <!-- Kết thúc cột thứ hai -->
+                        </div>
+                        <div class="col-md-1">
+                            <button type="button" class="btn btn-danger btn-remove">Remove</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <button type="button" id="addDropdown" class="btn btn-primary">Add Another Product</button>
+        </div>
+        <div class="form-group">
+            <label>Total of Note: </label>
+            <input type="number" id="TotalOfProduct" class="form-control" readonly />
+        </div>
+
+        <div class="form-row">
+            <div class="submit-btn">
+                <div class="input-data">
+                    <div class="inner"></div>
+                    <input type="submit" value="Create" class="btn btn-primary">
+                </div>
+            </div>
+            <div class="back-btn">
+                <div class="submit-btn">
+                    <div class="input-data">
+                        <div class="inner"></div>
+                        <a asp-action="Index" class="btn btn-primary">Back to List</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        // Xử lý sự kiện khi nhập số lượng xuất
+        $("#dropdownsContainer").on("input", "input[name$='.StockOut']", function () {
+            var stockOut = parseFloat($(this).val()) || 0; // Lấy giá trị số lượng xuất
+            var quantity = parseFloat($(this).closest(".product-dropdown").find("#Quantity").val()) || 0; // Lấy giá trị số lượng hiện có
+            if (stockOut > quantity) {
+                // Hiển thị thông báo lỗi
+                $(this).closest(".product-dropdown").find("#productValidation").text("StockOut cannot exceed Quantity");
+                // Vô hiệu hóa nút tạo khi có lỗi
+                $(".submit-btn input[type='submit']").prop("disabled", true);
+            } else {
+                // Ẩn thông báo lỗi nếu số lượng hợp lệ
+                $(this).closest(".product-dropdown").find("#productValidation").text("");
+                // Kích hoạt lại nút tạo khi không có lỗi
+                $(".submit-btn input[type='submit']").prop("disabled", false);
+            }
+        });
+
+        $(document).ready(function () {
+            $('#Phone').change(function () {
+                var selectedCustomerId = $(this).val();
+                if (selectedCustomerId) {
+                    $.ajax({
+                        type: 'GET',
+                        url: '@Url.Action("GetCustomerDetails", "Notes")',
+                        data: { 'customerId': selectedCustomerId },
+                        success: function (res) {
+                            if (res.customer) {
+                                $('#Customer').val(res.customer.name);
+                                $('#AddressCustomer').val(res.customer.address);
+                            }
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    });
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            var counter = 0;
+
+
+            // Xử lý sự kiện khi thay đổi sản phẩm trong dropdown
+            $("#dropdownsContainer").on("change", "#productDropdown", function () {
+                var productId = $(this).val(); // Lấy giá trị của sản phẩm đã chọn
+                var dropdownContainer = $(this).closest(".product-dropdown"); // Tìm phần tử cha gần nhất có lớp 'product-dropdown'
+                var errorOccurred = false; // Biến để theo dõi xem có lỗi xảy ra hay không
+
+                if (productId) { // Nếu có sản phẩm được chọn
+                    // Gửi yêu cầu AJAX đến máy chủ để lấy thông tin sản phẩm
+                    $.ajax({
+                        url: '/Products/GetProductDetails', // Đường dẫn đến action xử lý lấy thông tin sản phẩm
+                        type: 'GET',
+                        data: { 'id': productId }, // Dữ liệu gửi đi, trong trường hợp này là ID của sản phẩm
+                        success: function (data) { // Hàm được gọi khi yêu cầu AJAX thành công
+                            // Cập nhật các trường thông tin của sản phẩm
+                            dropdownContainer.find("#ProductCode").val(data.productCode);
+                            var quantity = data.quantity;
+                            dropdownContainer.find("#Quantity").val(quantity);
+                            dropdownContainer.find("#Price").val(data.price);
+                            dropdownContainer.find("#Category").val(data.category);
+
+                            // Tính toán và cập nhật TotalOfNote
+                            var totalOfNote = 0;
+                            $(".product-dropdown").each(function () {
+                                var stockOut = parseFloat($(this).find("input[name$='.StockOut']").val()) || 0; // Lấy giá trị StockOut từ input
+                                if (stockOut > quantity) {
+                                    alert("Stock Out không thể lớn hơn Quantity. Vui lòng nhập lại.");
+                                    $(this).find("input[name$='.StockOut']").val(0);
+                                    errorOccurred = true; // Đặt biến errorOccurred thành true
+                                    return false; // Ngừng xử lý nếu StockOut lớn hơn Quantity
+                                }
+                                var price = parseFloat($(this).find("#Price").val()) || 0; // Lấy giá trị Price từ input
+                                var total = stockOut * price; // Tính toán Total
+                                totalOfNote += total;
+                            });
+                            if (!errorOccurred) { // Nếu không có lỗi xảy ra
+                                $("#TotalOfProduct").val(totalOfNote);
+                            }
+                        },
+                        error: function () { // Hàm được gọi khi có lỗi xảy ra trong quá trình gửi yêu cầu AJAX
+                            console.log("Error occurred while fetching product details.");
+                        },
+                        async: false // Đặt thuộc tính async thành false để đảm bảo rằng yêu cầu AJAX hoàn tất trước khi tiếp tục thực hiện mã tiếp theo
+                    });
+                }
+            });
+
+
+            // Xử lý sự kiện khi click vào nút "Search Product"
+            $('#dropdownsContainer').on('click', '#showProductSearch', function () {
+                $(this).closest(".product-dropdown").find("#productSearch").toggle();
+
+                // Hiển thị tất cả các sản phẩm khi click vào ô tìm kiếm
+                if ($(this).closest(".product-dropdown").find("#productSearch").is(":visible")) {
+                    var searchResults = $(this).closest(".product-dropdown").find('#productSearchResults');
+                    if (searchResults.is(':empty')) {
+                        $(this).closest(".product-dropdown").find('#productDropdown option').clone().appendTo(searchResults);
+                    }
+                }
+            });
+
+            // Các sự kiện khác giữ nguyên
+
+
+            // Xử lý sự kiện khi nhập vào ô tìm kiếm
+            $('#dropdownsContainer').on('input', '#productSearchInput', function () {
+                var searchKeyword = $(this).val().toLowerCase();
+                $(this).closest(".product-dropdown").find('#productSearchResults').empty();
+                $(this).closest(".product-dropdown").find('#productDropdown option').each(function () {
+                    var productName = $(this).text().toLowerCase();
+                    if (productName.includes(searchKeyword)) {
+                        $(this).closest(".product-dropdown").find('#productSearchResults').append($(this).clone());
+                    }
+                });
+            });
+
+            // Xử lý sự kiện khi click vào một kết quả từ ô tìm kiếm
+            $('#dropdownsContainer').on('click', '#productSearchResults option', function () {
+                var productId = $(this).val();
+                var productName = $(this).text();
+                $(this).closest(".product-dropdown").find('#productDropdown').val(productId).trigger('change'); // Trigger change event to fetch product details
+                $(this).closest(".product-dropdown").find('#productSearchInput').val(productName);
+                $(this).closest(".product-dropdown").find('#productSearch').hide();
+            });
+
+            // Sự kiện input cho các trường số lượng StockOut
+            $("#dropdownsContainer").on("input", "input[name$='.StockOut']", function () {
+                calculateTotal(); // Tính toán tổng khi có thay đổi trong số lượng
+            });
+
+            // Sự kiện click trên toàn bộ trang
+            $(document).on("click", function () {
+                calculateTotal(); // Tính toán tổng khi click chuột bất kỳ đâu trên trang
+            });
+
+            // Hàm tính toán tổng TotalOfNote
+            function calculateTotal() {
+                var totalOfNote = 0;
+                $(".product-dropdown").each(function () {
+                    var dropdownContainer = $(this);
+                    var stockOut = parseFloat(dropdownContainer.find("input[name$='.StockOut']").val()) || 0; // Lấy giá trị StockOut từ input
+                    var price = parseFloat(dropdownContainer.find("#Price").val()) || 0; // Lấy giá trị Price từ input
+                    var total = stockOut * price; // Tính toán Total
+                    dropdownContainer.find("#Total").val(total); // Cập nhật giá trị Total vào input
+                    totalOfNote += total; // Cộng dồn vào tổng TotalOfNote
+                });
+                $("#TotalOfProduct").val(totalOfNote); // Cập nhật tổng TotalOfNote
+            }
+            // Xử lý sự kiện khi click vào nút "Remove"
+            $("#dropdownsContainer").on("click", ".btn-remove", function () {
+                if ($(this).closest(".product-dropdown").index() === 0) {
+                    alert("The first item cannot be removed.");
+                } else {
+                    $(this).closest(".product-dropdown").remove();
+                }
+            });
+
+            $("#addDropdown").click(function () {
+                var clonedDropdown = $(".product-dropdown:first").clone(); // Clone the first form
+                var newIndex = $(".product-dropdown").length; // Get the new index
+
+                // Update the 'name' attributes of the input elements in the cloned dropdown
+                clonedDropdown.find("input, select").each(function () {
+                    var name = $(this).attr("name");
+                    if (name) {
+                        name = name.replace(/\[0\]/, "[" + newIndex + "]"); // Replace the old index with the new index
+                        $(this).attr("name", name);
+                    }
+                });
+
+                // Append the cloned form to the container
+                $("#dropdownsContainer").append(clonedDropdown);
+            });
+
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            // Handle change event in the dropdown
+            $('#Phone').change(function () {
+                var selectedCustomerId = $(this).val();
+                if (selectedCustomerId) {
+                    fetchCustomerDetails(selectedCustomerId);
+                }
+            });
+
+            // Handle input event in the search box
+            $('#productSearchInput').on('input', function () {
+                var searchKeyword = $(this).val().toLowerCase();
+                var resultsContainer = $('#productSearchResults');
+                resultsContainer.empty();
+
+                if (searchKeyword) {
+                    $('#Phone option').each(function () {
+                        var phone = $(this).text().toLowerCase();
+                        var customerId = $(this).val();
+                        if (phone.includes(searchKeyword)) {
+                            resultsContainer.append('<div class="search-result-item" data-customer-id="' + customerId + '">' + phone + '</div>');
+                        }
+                    });
+                }
+            });
+
+            // Handle click event on search results
+            $('#productSearchResults').on('click', '.search-result-item', function () {
+                var customerId = $(this).data('customer-id');
+                var phone = $(this).text();
+                $('#Phone').val(customerId).trigger('change'); // Ensure the correct option is selected and trigger change
+                $('#productSearchInput').val(phone);
+                $('#productSearchResults').empty();
+            });
+
+            // Handle focus event on the search input
+            $('#productSearchInput').on('focus', function () {
+                resetCustomerForm();
+            });
+
+            function fetchCustomerDetails(customerId) {
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("GetCustomerDetails", "Notes")',
+                    data: { 'customerId': customerId },
+                    success: function (res) {
+                        if (res.customer) {
+                            // Update customer information
+                            $('#Customer').val(res.customer.name);
+                            $('#AddressCustomer').val(res.customer.address);
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                });
+            }
+
+            function resetCustomerForm() {
+                $('#Phone').val('');
+                $('#Customer').val('');
+                $('#AddressCustomer').val('');
+            }
+        });
+    </script>
+}
