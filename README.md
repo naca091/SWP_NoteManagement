@@ -7,7 +7,8 @@
 - Microsoft SQL Server 2019 
   
 # Database 
-![Capture](https://github.com/naca09/Note-Delivery-Goods-System/assets/86470016/bb311963-d72a-49af-8140-74d8265a98e1)
+![image](https://github.com/naca091/SWP_NoteManagement/assets/161755174/ec69ff0f-1dd2-4bb2-8464-a4aa09c98d7d)
+
 
 # Development
 
