@@ -25,8 +25,7 @@
 ### 3 Prepare to build Note Delivery Goods:
 - Change appsettings.json
 - Add Database in SQL Server
-- Add Nuget Package 
-- Add SQL Server file 
+
 ### 4. Build Product 
 ```bash
   cd Project
